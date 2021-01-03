@@ -1,0 +1,17 @@
+{
+  "name": "dropship-native-addon",
+  "version": "0.1.0",
+  "description": "Dropship.Native for nodejs",
+  "main": "index.js",
+  "scripts": {
+    "build": "node-gyp rebuild",
+    "clean": "node-gyp clean"
+  },
+  "devDependencies": {
+    "node-gyp": "^7.1.2"
+  },
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "node-addon-api": "^3.1.0"
+  }
+}

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <NativeLib>Shared</NativeLib>
+
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+
+        <!--<IlcDisableReflection>true</IlcDisableReflection>-->
+        <IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
+        <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
+        <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
+        <RootAllApplicationAssemblies>false</RootAllApplicationAssemblies>
+        <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+        <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="6.0.0-*" />
+        <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
+    </ItemGroup>
+
+    <Target Name="StripNativeBinary" AfterTargets="CopyNativeBinary" Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <Exec Command="strip $(OutputPath)/publish/Dropship.Native.so" />
+    </Target>
+
+</Project>
