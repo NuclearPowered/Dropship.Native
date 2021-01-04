@@ -1,7 +1,51 @@
 #include <napi.h>
-#include <dlfcn.h>
 
 using namespace Napi;
+
+#ifdef WINDOWS_SPECIFIC_DEFINE
+#include <windows.h>
+
+void *dlopen (const char *filename, int flags)
+{
+    HINSTANCE hInst;
+
+    hInst= LoadLibraryA(filename);
+    if (hInst==NULL) {
+        return NULL;
+    }
+    return hInst;
+}
+
+int dlclose (void *handle)
+{
+    BOOL ok;
+    int rc= 0;
+
+    ok= FreeLibrary ((HINSTANCE)handle);
+    if (! ok) {
+        rc= -1;
+    }
+    return rc;
+}
+
+void *dlsym (void *handle, const char *name)
+{
+    FARPROC fp;
+
+    fp= GetProcAddress ((HINSTANCE)handle, name);
+    if (!fp) {
+      return NULL;
+    }
+    return (void *)(intptr_t)fp;
+}
+
+#define PARSING_LIB "./Dropship.Native.dll"
+#endif 
+
+#ifdef LINUX_DEFINE
+#include <dlfcn.h>
+#define PARSING_LIB "./Dropship.Native.so"
+#endif
 
 struct ModMetadata
 {
@@ -13,24 +57,28 @@ struct ModMetadata
   char *version;
   char *description;
   char *authors;
+
+  ModMetadata(bool s, char *description): success(s), description(description) {}
 };
 
 ModMetadata *parse(char *file)
 {
   typedef ModMetadata *(*parse_t)(char *);
   char *error;
-  void *handle = dlopen("/mnt/Files/Development/Reactor/Dropship.Native/Dropship.Native/bin/Release/netstandard2.1/linux-x64/publish/Dropship.Native.so", RTLD_LAZY);
+  
+  void *handle = dlopen(PARSING_LIB, 1);
+  
   if (!handle)
   {
-    fprintf(stderr, "%s\n", dlerror());
-    exit(1);
+    ModMetadata metadata(false, "Could not find native parsing library.");
+    return &metadata;
   }
-  dlerror();
-  parse_t func = (parse_t)dlsym(handle, "parse");
-  if ((error = dlerror()) != nullptr)
+
+  parse_t func = (parse_t) dlsym(handle, "parse");
+  if (!func)
   {
-    fprintf(stderr, "%s\n", error);
-    exit(1);
+    ModMetadata metadata(false, "Could not locate parse function in native library.");
+    return &metadata;
   }
 
   ModMetadata *result = (*func)(file);
