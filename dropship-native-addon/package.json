@@ -1,11 +1,12 @@
 {
-  "name": "dropship-native-addon",
-  "version": "0.1.0",
+  "name": "@nuclearpowered/dropship-native-addon",
+  "version": "0.1.2",
   "description": "Dropship.Native for nodejs",
   "main": "index.js",
   "scripts": {
     "build": "node-gyp rebuild",
-    "clean": "node-gyp clean"
+    "clean": "node-gyp clean",
+    "install": "node-gyp rebuild"
   },
   "devDependencies": {
     "node-gyp": "^7.1.2"
@@ -13,5 +14,12 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "node-addon-api": "^3.1.0"
-  }
+  },
+  "gypfile": true,
+  "repository": "https://github.com/NuclearPowered/Dropship.Native",
+  "author": "NuclearPowered",
+  "bugs": {
+    "url": "https://github.com/NuclearPowered/Dropship.Native/issues"
+  },
+  "homepage": "https://github.com/NuclearPowered/Dropship.Native#readme"
 }
