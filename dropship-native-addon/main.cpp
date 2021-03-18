@@ -42,6 +42,9 @@ void *dlsym(void *handle, const char *name) {
 #include <dlfcn.h>
 #endif
 
+#ifdef MAC_DEFINE
+#include <dlfcn.h>
+#endif
 
 struct ModMetadata {
   bool success;
