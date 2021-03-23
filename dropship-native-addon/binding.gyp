@@ -25,6 +25,11 @@
                     'defines': [
                     'NON_WINDOWS_DEFINE',
                     ],
+                }],
+                ['OS=="mac"', {
+                    'defines': [
+                    'MAC_DEFINE'
+                    ]
                 }]
             ]
         }
